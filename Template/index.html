@@ -1,1 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Detection System</title>
+    <style>
+        .img{
+            background-repeat: no-repeat;
+            height: 100%;
+            width: 100%;
+            
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: beige;
+            text-align: center;
+            
+
+        }
+
+        h1 {
+            color: rgb(255, 255, 255);
+            background-color: rgb(200, 228, 71);
+            border-radius: 5px;
+            height: 40px;
+            padding: 15px;
+            text-shadow: rgb(11, 11, 11) 4px 3px 2px;
+        }
+
+        .container {
+            margin-top: 50px;
+            height: 150px;
+
+            max-width: 500px;
+            margin-left: 32%;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 3px 3px 6px;
+        }
+
+        input[type="text"] {
+            margin: 10px;
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: gainsboro;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: rgb(175, 250, 35);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .message-box {
+            display: none;
+            position: fixed;
+            top: 70%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            width: 300px;
+            padding: 20px;
+            margin: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .message-box p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .message-box button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .message-box button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        function detectPhishing() {
+            var url = document.getElementById("url").value;
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'url=' + encodeURIComponent(url)
+            })
+                .then(response => response.text())
+                .then(result => {
+                    var messageBox = document.getElementById('messageBox');
+                    messageBox.style.display = 'block';
+                    var message = document.getElementById('message');
+                    message.innerText = 'The URL is ' + (result === '1' ? 'Phishing' : 'Legitimate');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function closeMessageBox() {
+            var messageBox = document.getElementById('messageBox');
+            messageBox.style.display = 'none';
+        }
+    </script>
+</head>
+
+<body class="img">
+    
+    <h1>Phishing Detection System</h1>
+    <div class="container">
+        <label for="url">Enter URL:</label><br>
+        <input type="text" id="url" name="url"><br><br>
+        <input type="submit" value="Detect" onclick="detectPhishing()">
+    </div>
+    <div id="messageBox" class="message-box">
+        <p id="message"></p>
+        <button onclick="closeMessageBox()">OK</button>
+    </div>
+</body>
+
+</html>
